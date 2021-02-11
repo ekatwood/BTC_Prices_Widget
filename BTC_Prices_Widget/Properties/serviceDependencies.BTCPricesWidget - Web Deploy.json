@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "storage1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Storage/storageAccounts/btcpriceswidgetstorage",
+      "type": "storage.azure",
+      "connectionId": "btcwidget",
+      "secretStore": "AzureAppSettings"
+    }
+  }
+}
