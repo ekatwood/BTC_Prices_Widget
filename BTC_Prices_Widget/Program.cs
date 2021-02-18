@@ -118,7 +118,7 @@ namespace BTC_Prices_Widget
 
                                 bool coinFound = false;
 
-                                if (percentChange >= job.Item2)
+                                if ((percentChange > 0 && percentChange >= job.Item2 && job.Item2 > 0) || (percentChange < 0 && percentChange <= job.Item2 && job.Item2 < 0))
                                 {
                                     //check if it already sent this hour
                                     TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
@@ -166,10 +166,18 @@ namespace BTC_Prices_Widget
                                             emailSubject = emailSubject + "," + c;
                                         }
                                         
+                                        if(percentChange < 0)
+                                        {
+                                            emailBody = emailBody + c + " fell by " + Math.Round(percentChange, 2) + "% in ";
+                                        }
+                                        else
+                                        {
+                                            emailBody = emailBody + c + " rose by " + Math.Round(percentChange, 2) + "% in ";
+                                        }
 
-                                        emailBody = emailBody + c + " rose by " + Math.Round(percentChange,2) + "% in ";
+                                        
 
-                                        if (minutes > 45)
+                                        if (minutes > 55)
                                         {
                                             //convert minutes into hours for formatting
                                             if (minutes == 60)
@@ -211,11 +219,35 @@ namespace BTC_Prices_Widget
                             if (emailSubject.Contains(","))
                             {
                                 var coinses = emailSubject.Split(',');
-                                emailSubject = coinses[0] + " and more are rising fast! " + Char.ConvertFromUtf32(0xE10D);
+
+                                //set up subject
+                                if(emailBody.Contains("fell") && emailBody.Contains("rose"))
+                                {
+                                    emailSubject = coinses[0] + " and more are changing fast! " + Char.ConvertFromUtf32(0xE10D);
+                                }
+                                else if (emailBody.Contains("fell"))
+                                {
+                                    emailSubject = coinses[0] + " and more are falling fast! " + Char.ConvertFromUtf32(0x1f4c9);
+                                }
+                                else if (emailBody.Contains("rose"))
+                                {
+                                    emailSubject = coinses[0] + " and more are rising fast! " + Char.ConvertFromUtf32(0xE10D);
+                                }
+
+                                
                             }
                             else
                             {
-                                emailSubject = emailSubject + " is rising fast! " + Char.ConvertFromUtf32(0xE10D);
+                                //set up subject
+                                if (emailBody.Contains("fell"))
+                                {
+                                    emailSubject = emailSubject + " is falling fast! " + Char.ConvertFromUtf32(0x1f4c9);
+                                }
+                                else
+                                {
+                                    emailSubject = emailSubject + " is rising fast! " + Char.ConvertFromUtf32(0xE10D);
+                                }
+                                
                             }
 
                             //set up mail client
@@ -223,7 +255,7 @@ namespace BTC_Prices_Widget
 
                             smtpClient.UseDefaultCredentials = false;
                             smtpClient.Port = 587;
-                            smtpClient.Credentials = new NetworkCredential("eric.atwood12@gmail.com", "ek@132EKA");
+                            smtpClient.Credentials = new NetworkCredential("eric.atwood12@gmail.com", "Papspd9@@");
                             smtpClient.EnableSsl = true;
 
                             //send email
@@ -255,7 +287,7 @@ namespace BTC_Prices_Widget
 
                     smtpClient.UseDefaultCredentials = false;
                     smtpClient.Port = 587;
-                    smtpClient.Credentials = new NetworkCredential("eric.atwood12@gmail.com", "ek@132EKA");
+                    smtpClient.Credentials = new NetworkCredential("eric.atwood12@gmail.com", "Papspd9@@");
                     smtpClient.EnableSsl = true;
 
                     //send email
